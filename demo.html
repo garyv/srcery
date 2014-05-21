@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+  <title>
+    Srcery
+  </title>
+  <meta charset='utf-8'>
+  <meta content='width=device-width, initial-scale=1' name='viewport'>
+  <style>
+    body { font: 125%/1em sans-serif; margin: 0; }
+
+    h2 { margin-top: 1em; font-size: 1em; }
+    p, a { font-size: .9em; }
+    img { max-width: 100%; }
+    textarea { display: block; height: 6em; width: 100%;
+               background: #111; font-size: 1em; color: #f3f3f3; }
+    .full-width { width: 100%; }
+    .loading { background: url(loading.gif) center center no-repeat;}
+
+    @media (min-width: 600px) {
+        body { margin: 0 auto; width: 88%; }
+        textarea { width: 100%; }
+    }
+  </style>
+
+</head>
+<body>
+
+  <h1>Srcery</h1>
+  <p><i>Responsive images done right</i></p>
+
+  <p>
+    Ever want to have multiple resolutions of one image on a webpage? 
+  </p> 
+
+  <p>
+    This image loading plugin makes it easy to create HTML images that are responsive, lazy loading, so you can use images that look great at any size or resolution while reducing load time and saving bandwidth.
+  </p>
+
+  <h4>Features</h4>
+  <ul>
+    <li>Responsive image loading using HTML5 srcset attribute. This allows listing several different versions of an image, then loading one automatically based on the browser's current width.</li>
+    <li>Lazy loading - Images are not loaded until they are scrolled into view, to efficiently save bandwidth</li> 
+    <li>Eager loading - To reduce delay from lazy loading, this plugin "looks ahead" and loads images right before they enter view.</li> 
+    <li>Supports retina displays - target browser sizes are adjusted automatically to support high resolution displays</li> 
+    <li>Images are updated automatically on orientation change and while scrolling</li>
+    <li>Supports regular HTML image tags</li>
+    <li>No dependencies - just one small Javascript file implements features in all browsers</l1>
+  </ul>
+
+  <a href='srcery.js'>Source Code (3.77KB)</a>
+  <p><small>
+    <a href='srcery.min.js'>Minified Code (635 bytes gzipped)</a>
+  </small></p>
+  
+  <h2>Examples:</h2>
+
+  <div>
+    <h2>simple image (nothing special)</h2>
+    <img src="images/480x320.gif">
+
+    <h2 id="lazy">lazy load image</h2>
+    <img src='clear.gif' data-srcset='images/480x322.gif'>
+    
+    <h2>large image, or small image</h2>
+    <img src='images/480x321.gif' data-srcset='images/800x480.gif 800w'>
+
+    <h2>HD image, that scales down</h2>
+    <img src='clear.gif' data-srcset='images/1440x600.gif 1400w, images/800x400.gif 800w, images/480x240.gif' class='full-width loading'>
+    
+    <h2>HD image, lazy loading, with fallback for no JavaScript</h2>
+    <img src='clear.gif' data-srcset='images/2400x800.gif 2300w, images/1440x600.gif 1400w, images/800x400.gif 800w, images/480x240.gif' class='full-width loading'>
+    <noscript><img src='images/800x400.gif' class='full-width loading'></noscript>
+  
+    <textarea><noscript><img src='images/800x400.gif'></noscript></textarea>
+  </div>
+
+  <h2> To use Srcery </h2>
+  <ol>
+    <li>Start with regular HTML image tags</li>
+    <li>Add a srcset, like in the examples above</li>
+    <li>Then add one tiny script before the end body tag, like this</li>
+  </ol>
+  <script src='srcery.js' async></script>
+
+  <textarea>    <script src='srcery.js' async></script>
+  </body>
+</html></textarea>
+  
+  <p>
+    <a href='#'>back top ⬆︎</a>
+  </p>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+  <script>window.jQuery || document.write('<script src="jquery-1.9.1.min.js"><\/script>')</script>
+
+  <script data='demo'>
+    // Adds code snippets after each image to show off its syntax
+    $(document).ready( function(){
+
+        var s = '<textarea><img src="-s-"></textarea>';
+
+        $('img').not('[data-srcset]').each(function(){
+            var img = $(this)
+            img.after( s.replace(/-s-/,  img.attr('data-original-src') || img.attr('src')) );
+        });
+
+        s = '<textarea><img src="-s-" data-srcset="-ss-"></textarea>';
+        $('img[data-srcset]').each(function(){
+            var img = $(this)
+            img.after( s.replace(/-s-/,  img.attr('data-original-src')||img.attr('src'))
+                        .replace(/-ss-/, img.attr('data-srcset')) );
+        });
+    });
+  </script>
+
+</body>
+</html>

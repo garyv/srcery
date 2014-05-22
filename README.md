@@ -19,7 +19,7 @@ This image loading plugin makes it easy to create HTML images that are responsiv
 
 [Source Code](https://github.com/garyv/srcery/blob/master/srcery.js) (3.77KB)
 [Minified Code](http://garyv.s3.amazonaws.com/srcery/srcery.min.js) (635 bytes gzipped)
-View live [Demo](http://garyv.s3.amazonaws.com/srcery/demo.html).
+[Live Demo](http://garyv.s3.amazonaws.com/srcery/demo.html).
 
 ### To use Srcery
 

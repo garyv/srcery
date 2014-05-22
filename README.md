@@ -26,15 +26,14 @@ View live [Demo](http://garyv.s3.amazonaws.com/srcery/demo.html).
 
 * Start with regular HTML image tags
 * Add a srcset, like in the examples below
-* Then add one tiny script before the end body tag, like this
+* Then add one tiny script directly before the end body tag
 
 
         <script src='srcery.js' async></script> 
-      </body> 
-    </html>
 
 
-#### Examples
+
+### Examples
 
 
 simple image (nothing special)

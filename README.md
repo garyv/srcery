@@ -63,11 +63,11 @@ Load lazily
 * To avoid making unnecessary HTTP requests, set the src attribute of most images to a tiny blank image (clear.gif) or a loading animation (loading.gif) with a far future Expires header. 
 * Add a data-srcset attribute to each image with the actual image URL or list of image URLs in multiple sizes.
 
-    <img src="clear.gif" data-srcset="fullsize.jpg 1200w, mobile.jpg">
+        <img src="clear.gif" data-srcset="fullsize.jpg 1200w, mobile.jpg">
 
 Script tag
 * Insert the srcery.js script tag directly before the ending </body> tag. This allows the script to run the instant the document is ready.
 * Add the async attribute to the srcery.js script tag, to prevent it from blocking other scripts from running in browsers that support the async attribute.
 
-    <script src="srcery.js" async></script> 
+        <script src="srcery.js" async></script> 
 

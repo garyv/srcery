@@ -66,7 +66,7 @@ Load lazily
         <img src="clear.gif" data-srcset="fullsize.jpg 1200w, mobile.jpg">
 
 Script tag
-* Insert the srcery.js script tag directly before the ending </body> tag. This allows the script to run the instant the document is ready.
+* Insert the srcery.js script tag directly before the ending body tag. This allows the script to run the instant the document is ready.
 * Add the async attribute to the srcery.js script tag, to prevent it from blocking other scripts from running in browsers that support the async attribute.
 
         <script src="srcery.js" async></script> 

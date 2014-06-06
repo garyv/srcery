@@ -1,0 +1,12 @@
+!!!
+%html
+  %head
+    %meta(charset='utf-8')
+       
+    %title= current_page.data.title || "Hubble Telescope"
+    
+    = stylesheet_link_tag "normalize", "all"
+    =# javascript_include_tag  "all"
+  
+  %body
+    = yield

@@ -2,9 +2,9 @@
 title: Hubble Space Telescope
 ---
 
-%h1 Photos from Hubble Space Telescope
+%h1 Hubble Space Telescope
 
-%p This is a live demo of Srcery - the image loaging plugin by Gary Von Schilling
+%p This is a live demo of Srcy - the image loaging plugin by Gary Von Schilling
 %p 
   Source code - 
   %a(href='https://github.com/garyv/srcery/') http://github.com/garyv/srcery/
@@ -12,7 +12,9 @@ title: Hubble Space Telescope
 %noscript
   %img(src='images/960/hubble_space_telescope.jpg')
 
-- names = %w(hubble_space_telescope progenitor_star_sector ant_nebula galaxy_m106 carina_nebula galaxy_starburst saturn carina_nebula_caterpillar star-forming_region_ngc_3324 eta_carina_nebula ngc_1672 eyes_in_the_sky ngc_6791)
+- names = %w( progenitor_star_sector ant_nebula galaxy_m106 carina_nebula galaxy_starburst saturn carina_nebula_caterpillar star-forming_region_ngc_3324 eta_carina_nebula ngc_1672 eyes_in_the_sky ngc_6791)
+
+= image_tag name: 'hubble_space_telescope', default_size: 480, sizes: [ [1601,2400], [1201,1600], [961,1200], [601,960], [481,600], [0,480] ]
 
 - names.each do |name|
   
@@ -20,4 +22,4 @@ title: Hubble Space Telescope
 
   = image_tag name:name, sizes: [ [1601,2400], [1201,1600], [961,1200], [601,960], [481,600], [0,480] ]
 
-%script(src='javascripts/srcery.min.js' async)
+%script(src='javascripts/srcery.js' async)

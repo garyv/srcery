@@ -2,7 +2,7 @@
 // and lazy loading images
 
 var Srcery = (function () {
-    var d=document, eagerness=300, g=window, i, len, s, src, srcset, w, 
+    var d=document, eagerness=600, g=window, i, len, s, src, srcset, w, 
         attr, onEvent, inViewport, loadImage, runImages;
 
     imgs = d.querySelectorAll ?
@@ -90,6 +90,7 @@ var Srcery = (function () {
     runImages();
     onEvent( 'scroll', runImages );
     onEvent( 'orientationchange', runImages );
+    onEvent( 'load', runImages );
 
     // optional public methods
     return({

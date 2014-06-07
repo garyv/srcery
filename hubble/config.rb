@@ -8,15 +8,26 @@
 # Methods defined in the helpers block are available in templates
 helpers do
 
-  def image_tag name:'0.gif', sizes:{} 
-    if sizes.length > 0
-      sizes.map! {|size| "images/#{size[1]}/#{name}.jpg #{size[0]}w" }
-      srcset = sizes.join(', ').sub(' 0w', '')
-      "<img src='images/0.gif' data-srcset='#{srcset}' >"
+  def image_tag name:'0.gif', sizes:{}, default_size:nil
+    return "<img #{default_src} data-srcset='images/#{name}.jpg' >" if sizes.length == 0
+    
+    data_srcset = srcset(name, sizes)
+    
+    if default_size
+      "<img src='images/images/#{default_size}/#{name}.jpg' data-srcset='#{data_srcset}' >"
     else
-      "<img src='images/0.gif' data-srcset='images/#{name}.jpg' >"
+      "<img #{default_src} data-srcset='#{data_srcset}' >"
     end
   end
+
+  def srcset(name, sizes)
+    sizes.map! {|size| "images/#{size[1]}/#{name}.jpg #{size[0]}w" }
+    sizes.join(', ').sub(' 0w', '')
+  end
+
+  def default_src
+    "src='images/0.gif'"
+   end
 
   # def some_helper
   #   "Helping"

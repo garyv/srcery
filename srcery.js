@@ -2,8 +2,8 @@
 // and lazy loading images
 
 var Srcery = (function () {
-    var d=document, eagerness=300, g=window, i, len, s, src, srcset, w, 
-        attr, onEvent, inViewport, loadImage, runImages;
+    var d=document, eagerness=2, g=window, i, len, s, src, srcset, w, 
+        attr, onEvent, inViewport, loadImage, runImages, vHeight, vWidth;
 
     imgs = d.querySelectorAll ?
            d.querySelectorAll('img[data-srcset]'):
@@ -31,8 +31,8 @@ var Srcery = (function () {
         var rect = el.getBoundingClientRect();
 
         return (
-           rect.left   >= 0 - eagerness &&
-           rect.top <= eagerness + (g.innerHeight || d.documentElement.clientHeight)
+           rect.left   >= 0 - eagerness * viewportHeight() &&
+           rect.top <= eagerness * viewportHeight()
         )
     };
 
@@ -56,7 +56,7 @@ var Srcery = (function () {
             if ( srcset[s].match(/\dw$/) ) {
                 // capture desired width for image in srcset
                 w = +srcset[s].match(/\d+(?=w$)/) ;
-                if (w <= viewportWidth() ) {
+                if (w <= vWidth ) {
                     // apply first src matching page width
                     src = srcset[s].split(/ /)[0];
                     if ( attr(img, 'src')!= src ) {
@@ -72,6 +72,8 @@ var Srcery = (function () {
     };
 
     runImages = function() {
+        // cache viewportWidth before looping over every image
+        vWidth = viewportWidth();
         for ( i=0, len=imgs.length; i<len; i++ ) {
             
             if ( inViewport(imgs[i]) ) {
@@ -81,15 +83,27 @@ var Srcery = (function () {
         }
     }
 
+    // get page height
+    // and cache result in vHeight
+    viewportHeight = function() {
+        return vHeight = vHeight || 
+            (g.innerHeight || d.documentElement.clientHeight);
+    }
+
     // get page width
     // and multiply width by retina display level
     viewportWidth = function() {
         return (g.innerWidth || d.body.parentNode.clientWidth ) * (g.devicePixelRatio || 1);
     }
-     
-    runImages();
+
+    onEvent( 'load', runImages );
+    onEvent( 'orientationchange', function() {
+        // reset cached vHeight so it will load the new viewportHeight
+        vHeight = 0;
+        runImages();
+    });
     onEvent( 'scroll', runImages );
-    onEvent( 'orientationchange', runImages );
+    runImages();
 
     // optional public methods
     return({
@@ -98,11 +112,11 @@ var Srcery = (function () {
         // Eagerness is how many pixels to look ahead when loading images
         
         // example: 
-        // Srcery.setEagerness(600);  // double the eagerness
-        // Srcery.setEagerness(0);    // no eagerness, completely lazy loading
+        // Srcery.setEagerness(0);  // no eagerness, completely lazy loading
+        // Srcery.setEagerness(2);  // double the eagerness
 
         setEagerness: function(newEagerness) {
-            eagerness = newEagerness;
+            eagerness = newEagerness++;
         }
         
         // Allowing adding new images after page loads.

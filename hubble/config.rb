@@ -9,14 +9,14 @@
 helpers do
 
   def image_tag name:'0.gif', sizes:{}, default_size:nil
-    return "<img #{default_src} data-srcset='images/#{name}.jpg' >" if sizes.length == 0
+    return "<img class='foo' #{default_src} data-srcset='images/#{name}.jpg' >" if sizes.length == 0
     
     data_srcset = srcset(name, sizes)
     
     if default_size
-      "<img src='images/images/#{default_size}/#{name}.jpg' data-srcset='#{data_srcset}' >"
+      "<img class='foo' src='images/#{default_size}/#{name}.jpg' data-srcset='#{data_srcset}' >"
     else
-      "<img #{default_src} data-srcset='#{data_srcset}' >"
+      "<img class='foo' #{default_src} data-srcset='#{data_srcset}' >"
     end
   end
 

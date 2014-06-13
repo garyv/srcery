@@ -2,8 +2,9 @@
 // and lazy loading images
 
 var Srcery = (function () {
-    var d=document, eagerness=2, g=window, i, len, s, src, srcset, w, 
-        attr, onEvent, inViewport, loadImage, runImages, vHeight, vWidth;
+    var d=document, delay=200, eagerness=2.5, g=window, 
+        i, hold, len, s, src, srcset, vHeight, vWidth, w, 
+        attr, onEvent, inViewport, loadImage, runImages;
 
     imgs = d.querySelectorAll ?
            d.querySelectorAll('img[data-srcset]'):
@@ -37,9 +38,8 @@ var Srcery = (function () {
     };
 
     loadImage = function(img){
-        srcset = attr(img, 'data-srcset');
-        
         // exit if no srcset attribute
+        srcset = attr(img, 'data-srcset');
         if (!srcset) return;
         
         // save original src
@@ -72,8 +72,14 @@ var Srcery = (function () {
     };
 
     runImages = function() {
+
+        // exit if currently on hold
+        if (hold) return;
+        else hold = true;
+
         // cache viewportWidth before looping over every image
         vWidth = viewportWidth();
+
         for ( i=0, len=imgs.length; i<len; i++ ) {
             
             if ( inViewport(imgs[i]) ) {
@@ -81,6 +87,10 @@ var Srcery = (function () {
                 loadImage(imgs[i]);
             }
         }
+
+        setTimeout(function(){
+            hold = false;
+        }, delay);
     }
 
     // get page height
@@ -100,6 +110,7 @@ var Srcery = (function () {
     onEvent( 'orientationchange', function() {
         // reset cached vHeight so it will load the new viewportHeight
         vHeight = 0;
+        hold = false;
         runImages();
     });
     onEvent( 'scroll', runImages );
@@ -112,11 +123,11 @@ var Srcery = (function () {
         // Eagerness is how many pixels to look ahead when loading images
         
         // example: 
-        // Srcery.setEagerness(0);  // no eagerness, completely lazy loading
-        // Srcery.setEagerness(2);  // double the eagerness
+        // Srcery.setEagerness(1);  // no eagerness, completely lazy loading
+        // Srcery.setEagerness(5);  // double the eagerness
 
         setEagerness: function(newEagerness) {
-            eagerness = newEagerness++;
+            eagerness = newEagerness;
         }
         
         // Allowing adding new images after page loads.

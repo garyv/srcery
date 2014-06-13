@@ -17,11 +17,11 @@ This image loading plugin makes it easy to create HTML images that are responsiv
 * Supports regular HTML image tags
 * No dependencies - just one small Javascript file implements features in all browsers 
 
-[Source Code](https://github.com/garyv/srcery/blob/master/srcery.js) (3.77KB)
-[Minified Code](http://garyv.s3.amazonaws.com/srcery/srcery.min.js) (635 bytes gzipped)
+[Source Code](https://github.com/garyv/srcery/blob/master/srcery.js) (4.45KB)
+[Minified Code](http://garyv.s3.amazonaws.com/srcery/srcery.min.js) (704 bytes gzipped)
 [Live Demo](http://garyv.s3.amazonaws.com/srcery/demo.html).
 
-Hubble Photos Demo - (http://garyv.s3.amazonaws.com/srcery/hubble/index.html)
+[Hubble Photos Demo](http://garyv.s3.amazonaws.com/srcery/hubble/index.html)
 
 ### To use Srcery
 

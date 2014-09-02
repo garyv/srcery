@@ -2,13 +2,10 @@
 // and lazy loading images
 
 var Srcery = (function () {
-    var d=document, delay=200, eagerness=2.5, g=window, 
-        i, hold, len, s, src, srcset, vHeight, vWidth, w, 
-        attr, onEvent, inViewport, loadImage, runImages;
-
-    imgs = d.querySelectorAll ?
-           d.querySelectorAll('img[data-srcset]'):
-           d.getElementsByTagName('img');
+    var limits = {delay: 400, eagerness: 3, batchLength: 6},
+        d=document, g=window, batchIndex=0, position=0, 
+        i, hold, len, s, src, srcset, vHeight, vWidth, w, queued,  
+        attr, getImages, onEvent, inViewport, loadImage, runImages;
           
     // get or set an html attribute
     attr = function() {
@@ -20,6 +17,13 @@ var Srcery = (function () {
             arguments[0].getAttribute(arguments[1]);
     };
 
+    // set array of images
+    getImages = function() {
+        imgs = d.querySelectorAll ?
+               d.querySelectorAll('img[data-srcset]'):
+               d.getElementsByTagName('img');
+    }
+
     onEvent = function(event, action){
         g.addEventListener?
             this.addEventListener(event, action, false):
@@ -29,13 +33,26 @@ var Srcery = (function () {
     };
 
     inViewport = function(el) {
+        if ( attr(el, 'data-original-src') ) {
+            return true;
+        }
+
+        //console.log('- run getBoundingClientRect');
         var rect = el.getBoundingClientRect();
 
         return (
-           rect.left   >= 0 - eagerness * viewportHeight() &&
-           rect.top <= eagerness * viewportHeight()
+           rect.left   >= 0 - limits.eagerness * viewportHeight() &&
+           rect.top <= limits.eagerness * viewportHeight()
         )
     };
+
+    loadSrc = function(img, src){
+        if ( attr(img, 'src')!= src ) {
+            batchIndex += 1;
+            attr(img, 'src', src);
+            //console.log(['loading image', src, img, {batch:batchIndex}]);
+        }
+    }
 
     loadImage = function(img){
         // exit if no srcset attribute
@@ -53,20 +70,19 @@ var Srcery = (function () {
         // iterate array image widths in srcset
         for ( s=0; s<srcset.length; s++ ) {
         
-            if ( srcset[s].match(/\dw$/) ) {
+            if ( !srcset[s].match(/\dw$/) ) {
+                // regular lazy load
+                src = srcset[s];
+                loadSrc(img, src);
+
+            } else {
                 // capture desired width for image in srcset
                 w = +srcset[s].match(/\d+(?=w$)/) ;
                 if (w <= vWidth ) {
-                    // apply first src matching page width
                     src = srcset[s].split(/ /)[0];
-                    if ( attr(img, 'src')!= src ) {
-                         attr(img, 'src', src);
-                    }
-                    break;
+                    loadSrc(img, src);
+                    break;  
                 } 
-
-            } else {
-                attr(img, 'src', srcset[s]);
             } 
         }
     };
@@ -74,23 +90,49 @@ var Srcery = (function () {
     runImages = function() {
 
         // exit if currently on hold
-        if (hold) return;
-        else hold = true;
-
-        // cache viewportWidth before looping over every image
-        vWidth = viewportWidth();
-
-        for ( i=0, len=imgs.length; i<len; i++ ) {
+        if (!hold) {
+            //console.log('-- runImages called AND running');
+            hold = true;
             
-            if ( inViewport(imgs[i]) ) {
+            // cache viewportWidth before looping over every image
+            vWidth = viewportWidth();
+            queued = false;
 
-                loadImage(imgs[i]);
+            len=imgs.length;
+            //console.log(['getting imgs: ', len, imgs]);
+            position == position ? 0 : position;
+
+
+            for ( i=position; i<len; i++ ) {
+
+                if (batchIndex < limits.batchLength) {
+                    if ( inViewport(imgs[i]) ) {
+                        loadImage(imgs[i]);
+                    }
+                } else {
+                    if (!queued) {
+                        queued = true;
+                        setTimeout(function(){
+                            batchIndex = queued = 0;
+                            position = i;
+                            runImages();
+                        }, limits.delay / 10);
+                        return;
+                    }
+                }
+
+            }
+        } else {
+            if (!queued) {
+                queued = true;
+                setTimeout(function(){
+                    if (hold) {
+                        hold = queued = false;
+                        runImages();
+                    }
+                }, limits.delay);
             }
         }
-
-        setTimeout(function(){
-            hold = false;
-        }, delay);
     }
 
     // get page height
@@ -106,6 +148,10 @@ var Srcery = (function () {
         return (g.innerWidth || d.body.parentNode.clientWidth ) * (g.devicePixelRatio || 1);
     }
 
+    queued = hold = false;
+
+    getImages();
+
     onEvent( 'load', runImages );
     onEvent( 'orientationchange', function() {
         // reset cached vHeight so it will load the new viewportHeight
@@ -114,7 +160,12 @@ var Srcery = (function () {
         runImages();
     });
     onEvent( 'scroll', runImages );
-    runImages();
+    onEvent( 'orientationchange', runImages );
+
+    // reload imgs array again if not set        
+    !imgs.length && 
+        setTimeout(getImages, limits.delay);
+        
 
     // optional public methods
     return({
@@ -123,11 +174,15 @@ var Srcery = (function () {
         // Eagerness is how many pixels to look ahead when loading images
         
         // example: 
-        // Srcery.setEagerness(1);  // no eagerness, completely lazy loading
-        // Srcery.setEagerness(5);  // double the eagerness
+        // Srcery.set.({ eagerness: 1 });  // no eagerness, completely lazy loading
+        // Srcery.set.({ eagerness: 5 });  // double the eagerness
 
-        setEagerness: function(newEagerness) {
-            eagerness = newEagerness;
+        set: function(options) {
+            for (var property in options) {
+                if (options.hasOwnProperty(property)) {
+                    limits[property] = options[property]
+                }
+            }
         }
         
         // Allowing adding new images after page loads.
@@ -158,3 +213,4 @@ var Srcery = (function () {
     });
 
 })();
+
